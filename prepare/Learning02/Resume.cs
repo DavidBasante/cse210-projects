@@ -9,7 +9,9 @@ using Learning02;
             System.Console.WriteLine($"Jobs: ");
 
             foreach (Job job in _jobs){
-                job.Display();
-            }
+
+            job.Display();
+ 
         }
     }
+}
