@@ -1,35 +1,33 @@
 using System;
-namespace Develop03;
+using System.Collections.Generic;
+using System.Linq;
 
-class Program
+namespace Develop03
 {
-    static void Main(string[] args)
+    public class Program
     {
-        Console.Clear();
-        Console.WriteLine("Welcome to Scripture Memorize \n");
-
-        var scripture = new Scripture();
-
-        // Adicione aqui os versículos da escritura
-        scripture.AddVerse("John 3:16", "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.");
-
-        Console.WriteLine("Press Enter to hide words. Type 'quit' to quit.");
-        Console.ReadLine();
-
-        var wordCountToHide = 3; // Quantidade de palavras a serem ocultadas em cada versículo
-
-        while (scripture.GetHiddenVerseCount() < scripture.GetVerseCount())
+        public static void Main(string[] args)
         {
+            var scripture = new Scripture();
+            scripture.AddVerse("John 3:16", "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.");
+            scripture.AddVerse("Proverbs 3:5-6", "Trust in the LORD with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.");
+
             Console.Clear();
-            var verse = scripture.GetRandomHiddenVerse();
-            scripture.HideWordsInVerse(verse, wordCountToHide);
             scripture.DisplayScripture();
 
-            Console.WriteLine("\nPress Enter to hide more words. Type 'quit' to quit.");
-            var userInput = Console.ReadLine();
+            while (scripture.GetHiddenVerseCount() < scripture.GetVerseCount())
+            {
+                Console.WriteLine("\nPress Enter to hide words or type 'quit' to exit.");
+                var input = Console.ReadLine();
 
-            if (userInput.ToLower() == "quit")
-                break;
+                if (input == "quit")
+                    break;
+
+                Console.Clear();
+                var verse = scripture.GetRandomHiddenVerse();
+                scripture.HideWordsInVerse(verse, 2);
+                scripture.DisplayScripture();
+            }
         }
     }
 }
