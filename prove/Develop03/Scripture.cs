@@ -1,32 +1,37 @@
 namespace Develop03;
    public class Scripture
     {
-        private List<Word> verses;
+        private List<Word> _verses;
 
         public Scripture()
         {
-            verses = new List<Word>();
+            _verses = new List<Word>();
         }
 
         public void AddVerse(string reference, string text)
         {
-            var verse = new Word(reference, text);
-            verses.Add(verse);
+            var words = text.Split(' ');
+
+            foreach (var word in words)
+            {
+                var verse = new Word(reference, word);
+                _verses.Add(verse);
+            }
         }
 
         public int GetVerseCount()
         {
-            return verses.Count;
+            return _verses.Count;
         }
 
         public int GetHiddenVerseCount()
         {
-            return verses.Count(v => v.Hidden);
+            return _verses.Count(v => v.Hidden);
         }
 
         public Word GetRandomHiddenVerse()
         {
-            var hiddenVerses = verses.Where(v => v.Hidden).ToList();
+            var hiddenVerses = _verses.Where(v => v.Hidden).ToList();
             var random = new Random();
             var index = random.Next(hiddenVerses.Count);
             return hiddenVerses[index];
@@ -34,30 +39,32 @@ namespace Develop03;
 
         public void HideWordsInVerse(Word verse, int wordCountToHide)
         {
-            var words = verse.Text.Split(' ');
-            var hiddenWords = new List<string>();
+            var hiddenWords = new List<Word>();
             var random = new Random();
 
             while (hiddenWords.Count < wordCountToHide)
             {
-                var index = random.Next(words.Length);
-                var word = words[index];
+                var availableWords = _verses.Where(v => v.Reference == verse.Reference && !v.Hidden).ToList();
 
-                if (!hiddenWords.Contains(word))
-                {
-                    hiddenWords.Add(word);
-                    words[index] = new string('_', word.Length);
-                }
+                if (availableWords.Count == 0)
+                    break;
+
+                var index = random.Next(availableWords.Count);
+                var word = availableWords[index];
+
+                word.Hidden = true;
+                hiddenWords.Add(word);
             }
-
-            verse.Text = string.Join(' ', words);
         }
 
         public void DisplayScripture()
         {
-            foreach (var verse in verses)
+            var groupedVerses = _verses.GroupBy(v => v.Reference);
+
+            foreach (var group in groupedVerses)
             {
-                Console.WriteLine($"{verse.Reference}: {verse.Text}");
+                var verseText = string.Join(" ", group.Select(v => v.Hidden ? new string('_', v.Text.Length) : v.Text));
+                Console.WriteLine($"{group.Key}: {verseText}");
+            }
         }
     }
-}

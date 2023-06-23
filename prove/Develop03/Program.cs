@@ -28,6 +28,6 @@ namespace Develop03
                 scripture.HideWordsInVerse(verse, 2);
                 scripture.DisplayScripture();
             }
-        }
-    }
+       }
+   }
 }
